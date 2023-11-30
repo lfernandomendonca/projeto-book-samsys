@@ -25,7 +25,8 @@ namespace BookSamsys.Infrastructure.Repositories
 
         public async Task<Livro> GetLivroByISBN(string isbn)
         {
-            return await _context.Set<Livro>().FirstOrDefaultAsync(livro => livro.ISBN == isbn);
+            var x = await _context.Livros.Where(livro => livro.ISBN == isbn).FirstOrDefaultAsync();
+                return x;
         }
 
         

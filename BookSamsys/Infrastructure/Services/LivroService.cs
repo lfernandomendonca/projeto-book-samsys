@@ -140,11 +140,11 @@ namespace BookSamsys.Infrastructure.Servicos
                 }
                 if (livroDto.ISBN.Length == 13 && livroDto.LivroNome.Length >= 1 && livroDto.Preco > 0)
                 {
-                    var livroExistente = _uOf.LivroRepository.GetLivroByISBN(livroDto.ISBN);
+                    var livro = _mapper.Map<Livro>(livroDto);
+                    var livroExistente = await _livroRepository.GetLivroByISBN(livro.ISBN); ;
 
                     if (livroExistente == null)
                     {
-                        var livro = _mapper.Map<Livro>(livroDto);
                         _uOf.LivroRepository.Add(livro);
                         await _uOf.Commit();
 
