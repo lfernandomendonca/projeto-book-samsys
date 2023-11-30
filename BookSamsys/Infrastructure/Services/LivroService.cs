@@ -4,18 +4,19 @@ using BookSamsys.Infrastructure.Helper;
 using BookSamsys.Infrastructure.Models;
 using BookSamsys.Infrastructure.Repositories;
 using BookSamsys.Infrastructure.Repositories.UoW;
+using BookSamsys.Infrastructure.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
 namespace BookSamsys.Infrastructure.Servicos
 {
-    public class LivroService
+    public class LivroService : ILivroService
     {
-        private readonly IUnityOfWork _uOf;
+        private readonly IUnitOfWork _uOf;
         private readonly IMapper _mapper;
         private readonly ILivroRepository _livroRepository;
 
-        public LivroService(IUnityOfWork context, IMapper mapper, ILivroRepository livroRepo)
+        public LivroService(IUnitOfWork context, IMapper mapper, ILivroRepository livroRepo)
         {
             _uOf = context;
             _mapper = mapper;
@@ -76,12 +77,12 @@ namespace BookSamsys.Infrastructure.Servicos
             }
         }
 
-        public async Task<MessengerHelper<ActionResult<IEnumerable<LivroDTO>>>> GetLivrosByPreco()
+        public async Task<MessengerHelper<ActionResult<IEnumerable<LivroDTO>>>> GetLivrosByHighestPrice()
         {
             MessengerHelper<ActionResult<IEnumerable<LivroDTO>>> response = new();
             try
             {
-                var livros = await _livroRepository.GetLivrosPorPreco();
+                var livros = await _livroRepository.GetLivrosByHighestPrice();
                 if (livros == null)
                 {
                     response.Message = "Não há livros na lista.";
@@ -101,35 +102,71 @@ namespace BookSamsys.Infrastructure.Servicos
             }
         }
 
-        public async Task<MessengerHelper<ActionResult>> PostLivro([FromBody] LivroDTO livroDto)
+        public async Task<MessengerHelper<ActionResult<IEnumerable<LivroDTO>>>> GetLivrosByLowestPrice()
         {
-            MessengerHelper<ActionResult> response = new();
+            MessengerHelper<ActionResult<IEnumerable<LivroDTO>>> response = new();
             try
             {
-                var livro = _mapper.Map<Livro>(livroDto);
-                if (livro == null)
+                var livros = await _livroRepository.GetLivrosByLowestPrice();
+                if (livros == null)
                 {
-                    if (livroDto.ISBN.Length == 13 && livroDto.LivroNome.Length > 0 && livroDto.Preco > 0)
-                    {
-                        _uOf.LivroRepository.Add(livro);
-                        await _uOf.Commit();
-
-                        var livroDtoResult = _mapper.Map<LivroDTO>(livro);
-                        response.Message = "Livro foi adicionado com sucesso.";
-                        response.Success = true;
-                        return response;
-                    }
-                    response.Message = "Erro. Campos Preenchidos incorretamente.";
+                    response.Message = "Não há livros na lista.";
                     return response;
                 }
-                response.Message = "Livro já existe.";
+
+                var livrosDto = _mapper.Map<List<LivroDTO>>(livros);
+                response.Message = "Livros foram listados com sucesso.";
+                response.Obj = livrosDto;
+                response.Success = true;
                 return response;
+
             }
             catch (Exception)
             {
                 throw;
             }
         }
+
+        public async Task<MessengerHelper<ActionResult>> PostLivro([FromBody] LivroDTO livroDto)
+        {
+            MessengerHelper<ActionResult> response = new();
+            try
+            {
+                if (livroDto.ISBN.Length != 13 || livroDto.LivroNome.Length == 0 || livroDto.Preco <= 0)
+                {
+                    response.Message = "Erro. Campos preenchidos incorretamente.";
+                    response.Success = false;
+                    return response;
+                }
+                if (livroDto.ISBN.Length == 13 && livroDto.LivroNome.Length >= 1 && livroDto.Preco > 0)
+                {
+                    var livroExistente = _uOf.LivroRepository.GetLivroByISBN(livroDto.ISBN);
+
+                    if (livroExistente == null)
+                    {
+                        var livro = _mapper.Map<Livro>(livroDto);
+                        _uOf.LivroRepository.Add(livro);
+                        await _uOf.Commit();
+
+                        var livroDtoResult = _mapper.Map<LivroDTO>(livro);
+                        response.Message = "Livro foi adicionado com sucesso.";
+                        response.Success = true;
+                    }
+                   else
+                    {
+                        response.Message = "Livro já existe.";
+                        response.Success = false;
+                        
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return response;
+        }
+
 
         public async Task<MessengerHelper<ActionResult>> PutLivro(string isbn, LivroDTO livroDto)
         {

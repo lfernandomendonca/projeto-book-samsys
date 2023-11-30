@@ -1,6 +1,6 @@
 ﻿namespace BookSamsys.Infrastructure.Repositories.UoW
 {
-    public interface IUnityOfWork
+    public interface IUnitOfWork
     {
         ILivroRepository LivroRepository { get; }
         Task Commit();

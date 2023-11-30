@@ -31,11 +31,18 @@ namespace BookSamsys.Controllers
             return await _service.GetLivroByISBN(isbn);
         }
 
-        [HttpGet("Menorpreco")]
-        public async Task<MessengerHelper<ActionResult<IEnumerable<LivroDTO>>>> GetLivrosByPreco()
+        [HttpGet("MaiorPreço")]
+        public async Task<MessengerHelper<ActionResult<IEnumerable<LivroDTO>>>> GetLivrosByHighestPrice()
         {
-            return await _service.GetLivrosByPreco();
+            return await _service.GetLivrosByHighestPrice();
         }
+
+        [HttpGet("MenorPreço")]
+        public async Task<MessengerHelper<ActionResult<IEnumerable<LivroDTO>>>> GetLivrosByLowestPrice()
+        {
+            return await _service.GetLivrosByLowestPrice();
+        }
+
 
         [HttpPost]
         public async Task<MessengerHelper<ActionResult>> PostLivro([FromBody] LivroDTO livroDto)
