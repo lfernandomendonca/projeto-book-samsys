@@ -1,5 +1,6 @@
 ﻿using BookSamsys.Infrastructure.DTOs;
 using BookSamsys.Infrastructure.Helper;
+using BookSamsys.Infrastructure.Services;
 using BookSamsys.Infrastructure.Servicos;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -11,9 +12,9 @@ namespace BookSamsys.Controllers
     [ApiController]
     public class LivroController : ControllerBase
     {
-        private readonly LivroService _service;
+        private readonly ILivroService _service;
 
-        public LivroController(LivroService service)
+        public LivroController(ILivroService service)
         {
             _service = service;
         }
@@ -24,7 +25,7 @@ namespace BookSamsys.Controllers
             return await _service.GetLivros();
         }
 
-        [HttpGet("isbn", Name = "AdquirirLivro")]
+        [HttpGet("isbn")]
         public async Task<MessengerHelper<ActionResult<LivroDTO>>> GetLivroByISBN(string isbn)
         {
             return await _service.GetLivroByISBN(isbn);
