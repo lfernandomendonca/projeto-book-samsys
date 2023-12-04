@@ -49,7 +49,7 @@ namespace BookSamsys.Infrastructure.Servicos
             }
         }
 
-        public async Task <MessengerHelper<ActionResult<LivroDTO>>> GetLivroByISBN(string isbn)
+        public async Task<MessengerHelper<ActionResult<LivroDTO>>> GetLivroByISBN(string isbn)
         {
             MessengerHelper<ActionResult<LivroDTO>> response = new();
             try
@@ -96,7 +96,7 @@ namespace BookSamsys.Infrastructure.Servicos
                 return response;
 
             }
-            catch(Exception)
+            catch (Exception)
             {
                 throw;
             }
@@ -152,11 +152,11 @@ namespace BookSamsys.Infrastructure.Servicos
                         response.Message = "Livro foi adicionado com sucesso.";
                         response.Success = true;
                     }
-                   else
+                    else
                     {
                         response.Message = "Livro já existe.";
                         response.Success = false;
-                        
+
                     }
                 }
             }
@@ -170,33 +170,48 @@ namespace BookSamsys.Infrastructure.Servicos
 
         public async Task<MessengerHelper<ActionResult>> PutLivro(string isbn, LivroDTO livroDto)
         {
-            var livro = await _livroRepository.GetLivroByISBN(isbn);
+            MessengerHelper<ActionResult> response = new MessengerHelper<ActionResult>();
 
             try
             {
-                MessengerHelper<ActionResult> response = new MessengerHelper<ActionResult>();
-
+                // Verificar se o ISBN tem 13 caracteres
                 if (isbn.Length != 13)
                 {
-                    response.Message = "O ISBN precisa ter 13 caracteres";
+                    response.Message = "O ISBN precisa ter 13 caracteres.";
+                    response.Success = false;
                     return response;
                 }
-                if (livro == null)
+
+                // Obter o livro existente pelo ISBN
+                var livroInDb = await _livroRepository.GetLivroByISBN(isbn);
+
+                // Verificar se o livro existe
+                if (livroInDb == null)
                 {
                     response.Message = "Livro não encontrado.";
+                    response.Success = false;
                     return response;
                 }
-                if (livroDto.ISBN != livro.ISBN || livroDto.LivroNome.Length < 1 || livroDto.Preco <= 0)
+
+                // Verificar se os campos do DTO estão corretos
+                if (livroDto.ISBN != livroInDb.ISBN || livroDto.LivroNome.Length < 1 || livroDto.Preco <= 0)
                 {
                     response.Message = "Erro. Campos Preenchidos incorretamente.";
+                    response.Success = false;
                     return response;
                 }
-                var mapLivro = _mapper.Map<Livro>(livroDto);
-                _uOf.LivroRepository.Update(mapLivro);
+
+                // Atualizar as propriedades do livro existente com base no DTO
+                livroInDb.LivroNome = livroDto.LivroNome;
+                livroInDb.Preco = livroDto.Preco;
+
+                // Atualizar o livro no repositório
+                _uOf.LivroRepository.Update(livroInDb);
                 await _uOf.Commit();
 
-                livro = await _livroRepository.GetLivroByISBN(isbn);
-                var livroDtoResult = _mapper.Map<LivroDTO>(livro);
+                // Recarregar o livro do repositório para obter as informações atualizadas
+                livroInDb = await _livroRepository.GetLivroByISBN(isbn);
+                var livroDtoResult = _mapper.Map<LivroDTO>(livroInDb);
 
                 response.Message = "Informações do livro foram atualizadas.";
                 response.Success = true;
@@ -204,9 +219,11 @@ namespace BookSamsys.Infrastructure.Servicos
             }
             catch (Exception)
             {
-                throw;
+                throw; // Considere lidar com exceções de maneira mais específica se necessário
             }
         }
+
+
 
         public async Task<MessengerHelper<ActionResult<LivroDTO>>> DeleteLivroByISBN(string isbn)
         {        
