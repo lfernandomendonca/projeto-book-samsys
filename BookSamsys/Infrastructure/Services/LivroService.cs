@@ -3,7 +3,6 @@ using BookSamsys.Infrastructure.DTOs;
 using BookSamsys.Infrastructure.Helper;
 using BookSamsys.Infrastructure.Models;
 using BookSamsys.Infrastructure.Repositories;
-using BookSamsys.Infrastructure.Repositories.UoW;
 using BookSamsys.Infrastructure.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -12,13 +11,12 @@ namespace BookSamsys.Infrastructure.Servicos
 {
     public class LivroService : ILivroService
     {
-        private readonly IUnitOfWork _uOf;
+
         private readonly IMapper _mapper;
         private readonly ILivroRepository _livroRepository;
 
-        public LivroService(IUnitOfWork context, IMapper mapper, ILivroRepository livroRepo)
+        public LivroService(IMapper mapper, ILivroRepository livroRepo)
         {
-            _uOf = context;
             _mapper = mapper;
             _livroRepository = livroRepo;
         }
@@ -31,7 +29,7 @@ namespace BookSamsys.Infrastructure.Servicos
             MessengerHelper<ActionResult<IEnumerable<LivroDTO>>> response = new();
             try
             {
-                var livros = await _uOf.LivroRepository.Get().ToListAsync(); ;
+                var livros = await _livroRepository.Get().ToListAsync(); ;
                 if (livros == null)
                 {
                     response.Message = msgErro;
@@ -145,8 +143,8 @@ namespace BookSamsys.Infrastructure.Servicos
 
                     if (livroExistente == null)
                     {
-                        _uOf.LivroRepository.Add(livro);
-                        await _uOf.Commit();
+                        _livroRepository.Add(livro);
+                        await _livroRepository.Commit();
 
                         var livroDtoResult = _mapper.Map<LivroDTO>(livro);
                         response.Message = "Livro foi adicionado com sucesso.";
@@ -168,14 +166,14 @@ namespace BookSamsys.Infrastructure.Servicos
         }
 
 
-        public async Task<MessengerHelper<ActionResult>> PutLivro(string isbn, LivroDTO livroDto)
+        public async Task<MessengerHelper<ActionResult>> PutLivro(LivroDTO livroDto)
         {
             MessengerHelper<ActionResult> response = new MessengerHelper<ActionResult>();
 
             try
             {
                 // Verificar se o ISBN tem 13 caracteres
-                if (isbn.Length != 13)
+                if (livroDto.ISBN.Length != 13)
                 {
                     response.Message = "O ISBN precisa ter 13 caracteres.";
                     response.Success = false;
@@ -183,7 +181,7 @@ namespace BookSamsys.Infrastructure.Servicos
                 }
 
                 // Obter o livro existente pelo ISBN
-                var livroInDb = await _livroRepository.GetLivroByISBN(isbn);
+                var livroInDb = await _livroRepository.GetLivroByISBN(livroDto.ISBN);
 
                 // Verificar se o livro existe
                 if (livroInDb == null)
@@ -206,11 +204,11 @@ namespace BookSamsys.Infrastructure.Servicos
                 livroInDb.Preco = livroDto.Preco;
 
                 // Atualizar o livro no repositório
-                _uOf.LivroRepository.Update(livroInDb);
-                await _uOf.Commit();
+                _livroRepository.Update(livroInDb);
+                await _livroRepository.Commit();
 
                 // Recarregar o livro do repositório para obter as informações atualizadas
-                livroInDb = await _livroRepository.GetLivroByISBN(isbn);
+                livroInDb = await _livroRepository.GetLivroByISBN(livroDto.ISBN);
                 var livroDtoResult = _mapper.Map<LivroDTO>(livroInDb);
 
                 response.Message = "Informações do livro foram atualizadas.";
@@ -239,8 +237,8 @@ namespace BookSamsys.Infrastructure.Servicos
                 }
                 if (livro != null)
                 {
-                    _uOf.LivroRepository.Delete(livro);
-                    await _uOf.Commit();
+                    _livroRepository.Delete(livro);
+                    await _livroRepository.Commit();
                     response.Message = "Livro foi removido.";
                     response.Success = true;
                     return response;

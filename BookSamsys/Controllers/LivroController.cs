@@ -51,9 +51,9 @@ namespace BookSamsys.Controllers
         }
 
         [HttpPut]
-        public async Task<MessengerHelper<ActionResult>> PutLivro(string isbn, LivroDTO livroDto)
+        public async Task<MessengerHelper<ActionResult>> PutLivro(LivroDTO livroDto)
         {
-            return await _service.PutLivro(isbn,livroDto);
+            return await _service.PutLivro(livroDto);
         }
 
         [HttpDelete("ISBN")]

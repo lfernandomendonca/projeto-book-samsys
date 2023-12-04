@@ -41,5 +41,10 @@ namespace BookSamsys.Infrastructure.Repositories
             _context.Set<T>().Update(entity);
            
         }
+
+        public async Task Commit()
+        {
+            await _context.SaveChangesAsync();
+        }
     }
 }

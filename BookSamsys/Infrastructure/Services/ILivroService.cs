@@ -11,7 +11,7 @@ namespace BookSamsys.Infrastructure.Services
         Task<MessengerHelper<ActionResult<IEnumerable<LivroDTO>>>> GetLivrosByHighestPrice();
         Task<MessengerHelper<ActionResult<IEnumerable<LivroDTO>>>> GetLivrosByLowestPrice();
         Task<MessengerHelper<ActionResult>> PostLivro(LivroDTO livroDto);
-        Task<MessengerHelper<ActionResult>> PutLivro(string isbn, LivroDTO livroDto);
+        Task<MessengerHelper<ActionResult>> PutLivro(LivroDTO livroDto);
         Task<MessengerHelper<ActionResult<LivroDTO>>> DeleteLivroByISBN(string isbn);
     }
 }
