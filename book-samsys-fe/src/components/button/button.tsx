@@ -14,7 +14,7 @@ render(): ReactNode {
       color= { color }
       size = { size }
 
-      outline
+      outline= { false} 
     >
       {text || 'Click Me' }
     </Button>
