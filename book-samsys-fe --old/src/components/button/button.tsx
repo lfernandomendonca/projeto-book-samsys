@@ -1,10 +1,10 @@
 import React, { Component, ReactNode} from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Button } from 'reactstrap';
-import  MyBtnProps  from './button-props.tsx';
+import  BtnProps  from './button-props';
 
 
-class MyBtn extends Component<MyBtnProps> {
+class Btn extends Component<BtnProps> {
 render(): ReactNode {
   const {text, color, size} = this.props
     
@@ -21,4 +21,4 @@ render(): ReactNode {
   </div>)
 }
 }
-export default MyBtn;
+export default Btn;

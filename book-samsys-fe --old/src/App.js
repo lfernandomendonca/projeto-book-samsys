@@ -2,12 +2,21 @@ import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import axios from "axios";
 import { Table } from "reactstrap";
-import MyBtn from "./components/button/button.tsx";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
+import StrapModal from "./components/modal/modal.tsx";
 
 function App() {
   const baseURL = "https://localhost:7011/livro";
   const [data, setData] = useState([]);
+  // const [selectedBook, setSelectedBook] = useState({
+  //   isbn: string = '' ,
+  //   livroNome: string = '',
+  //   preco: number = ''
+  // })
+
+  // const saveInput = e => {
+  //   const {}
+  // }
 
   const getRequest = async () => {
     try {
@@ -37,8 +46,7 @@ function App() {
     <>
       <h1>Book Samsys</h1>
 
-      <MyBtn color="warning" text="Cadastrar livro" size=" " />
-
+      <StrapModal />
       <div className="container">
         <Table hover responsive size="sm" striped>
           <thead>
