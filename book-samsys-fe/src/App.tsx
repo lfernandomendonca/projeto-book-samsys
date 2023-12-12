@@ -1,18 +1,17 @@
-import React, {useState, useEffect} from "react";
+import React from "react";
 import "./App.css";
 import Header from "./component/header/header";
-import BookTable from "./component/table/table";
 
+import ReactTable from "./component/table/table";
 
 function App() {
   return (
     <>
-    <Header />
-    <br />
-    <BookTable />
+      <Header />
+      <br />
+      <ReactTable />
     </>
   );
-
 }
 
 export default App;
