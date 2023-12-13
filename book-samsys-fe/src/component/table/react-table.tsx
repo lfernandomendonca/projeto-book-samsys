@@ -1,17 +1,16 @@
-import { Table } from "reactstrap";
+import { Button, Table } from "reactstrap";
 import Livro from "../../book Data/livro";
-import Btn from "../button/btn";
 import useGetRequest from "../../hooks/axios-get-request";
 import { useEffect } from "react";
-
+import PutModal from "../modal/put-modal";
 
 const ReactTable = () => {
   const { data, getRequest } = useGetRequest();
 
-useEffect(() => {
+  useEffect(() => {
     getRequest();
-  }, []);
- 
+  }, [data]);
+
   return (
     <>
       <div className="container">
@@ -31,8 +30,8 @@ useEffect(() => {
                 <td>{Livro.livroNome}</td>
                 <td>{Livro.preco}</td>
                 <td>
-                  <Btn color="primary" text="Editar" size="" />
-                  <Btn color="danger" text="Excluir" size="" />
+                  <PutModal />{" "}
+                  <Button color="danger">Excluir</Button>
                 </td>
               </tr>
             ))}
