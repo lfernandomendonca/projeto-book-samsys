@@ -19,18 +19,21 @@ function ReactModal(
     JSX.IntrinsicClassAttributes<Modal> &
     Readonly<ModalProps>
 ) {
-  const [data, setData] = useState<Array<Livro>>([]);
-
   const postRequest = async () => {
     try {
+      // Convert selectLivro to JSON
+      const selectLivroJSON = JSON.stringify(selectLivro);
+      console.log(selectLivroJSON);
       const response = await axios.post(
         "https://localhost:7011/Livro",
         selectLivro
       );
-      setData(data.concat(response.data));
-      console.log(`Solicitaçãp 'POST' bem-sucedida: `, response.data);
+      if (response.data) {
+        console.log(`Solicitação 'POST' bem-sucedida: `, response.data);
+      } else {
+        console.error("Erro na resposta do servidor:", response);
+      }
     } catch (error) {
-      console.log(error);
       console.error("Erro ao realizar a solicitação POST:", error);
     }
   };
@@ -38,8 +41,6 @@ function ReactModal(
   const submitForm = async () => {
     await postRequest();
   };
-
-  useEffect(() => {}, [data]);
 
   const [selectLivro, setSelectLivro] = useState({
     isbn: "",
