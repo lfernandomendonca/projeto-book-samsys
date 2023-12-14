@@ -25,7 +25,7 @@ namespace BookSamsys.Controllers
             return await _service.GetLivros();
         }
 
-        [HttpGet("isbn")]
+        [HttpGet("{isbn}")]
         public async Task<MessengerHelper<ActionResult<LivroDTO>>> GetLivroByISBN(string isbn)
         {
             return await _service.GetLivroByISBN(isbn);
@@ -50,13 +50,13 @@ namespace BookSamsys.Controllers
             return await _service.PostLivro(livroDto);
         }
 
-        [HttpPut]
+        [HttpPut("{isbn}")]
         public async Task<MessengerHelper<ActionResult>> PutLivro(LivroDTO livroDto)
         {
             return await _service.PutLivro(livroDto);
         }
 
-        [HttpDelete("ISBN")]
+        [HttpDelete("{isbn}")]
         public async Task<MessengerHelper<ActionResult<LivroDTO>>> DeleteLivroByISBN(string isbn)
         {
             return await _service.DeleteLivroByISBN(isbn);

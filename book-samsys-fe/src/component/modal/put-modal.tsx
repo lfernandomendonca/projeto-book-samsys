@@ -41,22 +41,41 @@ function PutModal(
   };
 
   const putRequest = async () => {
-    await axios
-      .put("https://localhost:7011/Livro" + "/" + selectLivro.isbn, selectLivro)
-      .then((response) => {
-        var resposta = response.data;
-        var dadosAuxiliares = data;
-        dadosAuxiliares.map((livro) => {
-          if (livro.isbn === selectLivro.isbn) {
-            livro.livroNome = resposta.livroNome;
-            livro.preco = resposta.preco;
-          }
-        });
-        toggle();
-      })
-      .catch((error) => {
-        console.log(error);
+    try {
+      const jsonData = JSON.stringify(selectLivro);
+      console.log("Dados a serem enviados:", jsonData);
+
+      const response = await axios.put(
+        `https://localhost:7011/Livro/${selectLivro.isbn}`,
+        selectLivro
+      );
+      console.log("Resposta do servidor:", response.data);
+
+      var resposta = response.data;
+      console.log("Resposta do servidor:", resposta);
+      var dadosAuxiliares = data;
+      dadosAuxiliares.map((livro) => {
+        console.log("Antes da atualização:", livro);
+        if (livro.isbn === selectLivro.isbn) {
+          livro.isbn = resposta.isbn;
+          livro.livroNome = resposta.livroNome;
+          livro.preco = resposta.preco;
+          console.log("Depois da atualização:", livro);
+        }
       });
+
+      toggle();
+    } catch (error) {
+      // Verifica se o erro é um erro Axios
+      if (axios.isAxiosError(error)) {
+        // Erros específicos do Axios
+        console.error("Erro no pedido Axios:", error.message);
+        console.error("Configuração do pedido:", error.config);
+      } else {
+        // Outros erros
+        console.error("Erro ao realizar a solicitação PUT:", error);
+      }
+    }
   };
 
   const submitForm = async () => {
@@ -66,7 +85,7 @@ function PutModal(
   const [selectLivro, setSelectLivro] = useState({
     isbn: "",
     livroNome: "",
-    preco: 0,
+    preco: 0.0,
   });
 
   return (
@@ -83,10 +102,10 @@ function PutModal(
                 ISBN
               </Label>
               <Input
-                readOnly
+                onChange={handleChange}
                 name="isbn"
-                placeholder="Número de ISBN"
                 type="text"
+                placeholder="Alterar ISBN"
               />
             </Col>
             <br />
@@ -97,9 +116,8 @@ function PutModal(
               <Input
                 onChange={handleChange}
                 name="livroNome"
-                placeholder="Nome da Obra"
                 type="text"
-                value={selectLivro && selectLivro.livroNome}
+                placeholder="Alterar nome"
               />
             </Col>
             <br />
@@ -110,9 +128,8 @@ function PutModal(
               <Input
                 onChange={handleChange}
                 name="preco"
-                placeholder="Preço"
                 type="number"
-                value={selectLivro && selectLivro.preco}
+                placeholder="Alterar Preço"
               />
               <br />
             </Col>

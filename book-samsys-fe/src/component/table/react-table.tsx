@@ -30,7 +30,7 @@ const ReactTable = () => {
                 <td>{Livro.livroNome}</td>
                 <td>{Livro.preco}</td>
                 <td>
-                  <PutModal />{" "}
+                  <PutModal />
                   <Button color="danger">Excluir</Button>
                 </td>
               </tr>

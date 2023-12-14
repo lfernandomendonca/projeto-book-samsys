@@ -20,6 +20,7 @@ function PostModal(
     Readonly<ModalProps>
 ) {
   const { getRequest } = useGetRequest();
+
   const handleChange = (e: { target: any }) => {
     const { name, value } = e.target;
     setSelectLivro({
@@ -38,7 +39,7 @@ function PostModal(
     await postRequest();
     toggle();
   };
-  
+
   const postRequest = async () => {
     try {
       const selectLivroJSON = JSON.stringify(selectLivro);
@@ -63,8 +64,6 @@ function PostModal(
     livroNome: "",
     preco: 0,
   });
-
- 
 
   return (
     <div>
