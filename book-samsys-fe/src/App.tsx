@@ -1,15 +1,15 @@
 import React from "react";
 import "./App.css";
-import Header from "./component/header/header";
+import Header from "./components/Header";
 
-import ReactTable from "./component/table/react-table";
+import Livros from "./components/Livros";
 
 function App() {
   return (
     <>
       <Header />
       <br />
-      <ReactTable />
+      <Livros />
     </>
   );
 }
