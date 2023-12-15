@@ -1,21 +1,19 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Table } from "reactstrap";
-import Livro from "../../book Data";
-import useGetRequest from "../../services/axios-get-request";
-import PutModal from "../modal/put-modal";
-import "./style.css";
-import DeleteModal from "../modal/delete-modal";
+import Delete from "../Delete";
+import Put from "../Put";
+import Get from "../Get";
+import "./livros-style.css";
 
 export default function Livros() {
-  const { data, getRequest } = useGetRequest();
-  const { updateData, setUpdateData } = useGetRequest();
+  const { data, getRequest } = Get();
+  const [updateData, setUpdateData] = useState(true);
 
   useEffect(() => {
     if (updateData) {
       getRequest();
       setUpdateData(false);
     }
-    console.log(getRequest());
   }, [updateData]);
 
   return (
@@ -31,15 +29,15 @@ export default function Livros() {
             </tr>
           </thead>
           <tbody>
-            {data.map((Livro: Livro, index: any) => (
+            {data.map((Livro, index) => (
               <tr key={index}>
                 <td>{Livro.isbn}</td>
                 <td>{Livro.livroNome}</td>
                 <td>{Livro.preco}</td>
                 <td>
                   <div className="btn-wrapper">
-                    <PutModal className="btn" />
-                    <DeleteModal className="btn" />
+                    <Put isbn={Livro.isbn} updateData={setUpdateData} />
+                    <Delete isbn={Livro.isbn} />
                   </div>
                 </td>
               </tr>

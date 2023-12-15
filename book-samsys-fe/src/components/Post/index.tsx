@@ -12,16 +12,15 @@ import {
   ModalProps,
 } from "reactstrap";
 import axios from "axios";
-import useGetRequest from "../../services/axios-get-request";
+import useGetRequest from "../Get";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBookMedical } from '@fortawesome/free-solid-svg-icons'  
+import { faBookMedical } from "@fortawesome/free-solid-svg-icons";
 
-function PostModal(
+export default function Post(
   args: JSX.IntrinsicAttributes &
     JSX.IntrinsicClassAttributes<Modal> &
     Readonly<ModalProps>
 ) {
-  const { updateData, setUpdateData, getRequest} = useGetRequest();
 
   const handleChange = (e: { target: any }) => {
     const { name, value } = e.target;
@@ -41,6 +40,16 @@ function PostModal(
     await postRequest();
     toggle();
   };
+  
+  const [selectLivro, setSelectLivro] = useState({
+    isbn: "",
+    livroNome: "",
+    preco: 0,
+  });
+
+
+  const { getRequest } = useGetRequest();
+  const [updateData, setUpdateData] = useState(false)
 
   const postRequest = async () => {
     try {
@@ -53,7 +62,7 @@ function PostModal(
       if (response.data) {
         console.log(`Solicitação 'POST' bem-sucedida: `, response.data);
         await getRequest();
-        
+        setUpdateData(true)
       } else {
         console.error("Erro na resposta do servidor:", response);
       }
@@ -62,14 +71,8 @@ function PostModal(
     }
   };
 
-  const [selectLivro, setSelectLivro] = useState({
-    isbn: "",
-    livroNome: "",
-    preco: 0,
-  });
-
   return (
-    <div>
+    <div className="container">
       <Button color="warning" onClick={toggle}>
         Adicionar Livro <FontAwesomeIcon icon={faBookMedical} />
       </Button>
@@ -127,5 +130,3 @@ function PostModal(
     </div>
   );
 }
-
-export default PostModal;

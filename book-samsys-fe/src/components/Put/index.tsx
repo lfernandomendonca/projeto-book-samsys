@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { JSX } from "react/jsx-runtime";
 import {
   Button,
@@ -12,27 +12,35 @@ import {
   ModalProps,
 } from "reactstrap";
 import axios from "axios";
-import useGetRequest from "../../services/axios-get-request";
+import Livro from "../../book Data";
 
-function  DeleteModal(
-  args: JSX.IntrinsicAttributes &
+
+export default function Put(
+  props: JSX.IntrinsicAttributes &
     JSX.IntrinsicClassAttributes<Modal> &
-    Readonly<ModalProps>
+    Readonly<ModalProps> & { isbn: string; updateData: React.Dispatch<React.SetStateAction<boolean>> }
 ) {
-  const { data } = useGetRequest();
+  const { isbn, updateData, data } = props;
+  
+
+
+  const [modal, setModal] = useState(false);
+  const [selectLivro, setSelectLivro] = useState({
+    isbn: "",
+    livroNome: "",
+    preco: 0.0,
+  });
+
+  useEffect(() => {
+    setSelectLivro((prev) => ({ ...prev, isbn }));
+  }, [isbn]);
+
+  const toggle = () => setModal(!modal);
 
   const handleChange = (e: { target: any }) => {
     const { name, value } = e.target;
-    setSelectLivro({
-      ...selectLivro,
-      [name]: value,
-    });
-    console.log(selectLivro);
+    setSelectLivro((prev) => ({ ...prev, [name]: value }));
   };
-
-  const [modal, setModal] = useState(false);
-
-  const toggle = () => setModal(!modal);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -53,28 +61,19 @@ function  DeleteModal(
 
       var resposta = response.data;
       console.log("Resposta do servidor:", resposta);
-      var dadosAuxiliares = data;
-      dadosAuxiliares.map((livro) => {
-        console.log("Antes da atualização:", livro);
-        if (livro.isbn === selectLivro.isbn) {
-          livro.isbn = resposta.isbn;
-          livro.livroNome = resposta.livroNome;
-          livro.preco = resposta.preco;
-          console.log("Depois da atualização:", livro);
-        }
-      });
+      const updatedData = data.map((livro: Livro) =>
+        livro.isbn === selectLivro.isbn
+          ? { ...livro, livroNome: resposta.livroNome, preco: resposta.preco }
+          : livro
+      );
+
+      // Update the state in the 'Livros' component
+      updateData(true);
 
       toggle();
     } catch (error) {
-      // Verifica se o erro é um erro Axios
-      if (axios.isAxiosError(error)) {
-        // Erros específicos do Axios
-        console.error("Erro no pedido Axios:", error.message);
-        console.error("Configuração do pedido:", error.config);
-      } else {
-        // Outros erros
-        console.error("Erro ao realizar a solicitação PUT:", error);
-      }
+      // Handle errors
+      console.error("Erro ao realizar a solicitação PUT:", error);
     }
   };
 
@@ -82,18 +81,12 @@ function  DeleteModal(
     await putRequest();
   };
 
-  const [selectLivro, setSelectLivro] = useState({
-    isbn: "",
-    livroNome: "",
-    preco: 0.0,
-  });
-
   return (
     <div>
-      <Button color="danger" onClick={toggle}>
-        Excluir
+      <Button color="primary" onClick={toggle}>
+        Editar
       </Button>
-      <Modal isOpen={modal} toggle={toggle} {...args}>
+      <Modal isOpen={modal} toggle={toggle} {...props}>
         <ModalHeader></ModalHeader>
         <ModalBody>
           <Form onSubmit={handleSubmit}>
@@ -105,7 +98,8 @@ function  DeleteModal(
                 onChange={handleChange}
                 name="isbn"
                 type="text"
-                placeholder="Alterar ISBN"
+                disabled = {true}
+                value={selectLivro.isbn}
               />
             </Col>
             <br />
@@ -147,4 +141,3 @@ function  DeleteModal(
     </div>
   );
 }
-export default DeleteModal;

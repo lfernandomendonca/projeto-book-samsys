@@ -1,10 +1,9 @@
 import axios from "axios";
 import { useState } from "react";
-import Livro from "../book Data";
+import Livro from "../../book Data";
 
-function useGetRequest() {
+export default function Get() {
   const [data, setData] = useState<Array<Livro>>([]);
-  const [updateData, setUpdateData] = useState(true)
   const getRequest = async () => {
     try {
       const response = await axios.get("https://localhost:7011/livro");
@@ -20,6 +19,6 @@ function useGetRequest() {
     }
   };
 
-  return { data, updateData, setUpdateData, getRequest };
+  return { data, getRequest};
 }
-export default useGetRequest;
+

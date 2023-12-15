@@ -1,0 +1,9 @@
+.table td,
+.table th {
+  display: flexbox;
+  text-align: center;
+}
+
+.btn-wrapper {
+  display: inline-flex;
+}
