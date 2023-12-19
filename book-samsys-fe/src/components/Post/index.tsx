@@ -21,7 +21,6 @@ export default function Post(
     JSX.IntrinsicClassAttributes<Modal> &
     Readonly<ModalProps>
 ) {
-
   const handleChange = (e: { target: any }) => {
     const { name, value } = e.target;
     setSelectLivro({
@@ -40,16 +39,15 @@ export default function Post(
     await postRequest();
     toggle();
   };
-  
+
   const [selectLivro, setSelectLivro] = useState({
     isbn: "",
     livroNome: "",
     preco: 0,
   });
 
-
   const { getRequest } = useGetRequest();
-  const [updateData, setUpdateData] = useState(false)
+  const [updateData, setUpdateData] = useState(false);
 
   const postRequest = async () => {
     try {
@@ -62,7 +60,7 @@ export default function Post(
       if (response.data) {
         console.log(`Solicitação 'POST' bem-sucedida: `, response.data);
         await getRequest();
-        setUpdateData(true)
+        setUpdateData(true);
       } else {
         console.error("Erro na resposta do servidor:", response);
       }

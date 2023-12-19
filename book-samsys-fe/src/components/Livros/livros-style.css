@@ -7,3 +7,7 @@
 .btn-wrapper {
   display: inline-flex;
 }
+.space-between{
+  margin-left: 2px;
+  margin-right: 2px;
+}

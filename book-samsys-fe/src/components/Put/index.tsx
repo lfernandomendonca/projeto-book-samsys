@@ -12,17 +12,17 @@ import {
   ModalProps,
 } from "reactstrap";
 import axios from "axios";
-import Livro from "../../book Data";
-
+import Livro from "../../Livro";
 
 export default function Put(
   props: JSX.IntrinsicAttributes &
     JSX.IntrinsicClassAttributes<Modal> &
-    Readonly<ModalProps> & { isbn: string; updateData: React.Dispatch<React.SetStateAction<boolean>> }
+    Readonly<ModalProps> & {
+      isbn: string;
+      updateData: React.Dispatch<React.SetStateAction<boolean>>;
+    }
 ) {
   const { isbn, updateData, data } = props;
-  
-
 
   const [modal, setModal] = useState(false);
   const [selectLivro, setSelectLivro] = useState({
@@ -98,7 +98,7 @@ export default function Put(
                 onChange={handleChange}
                 name="isbn"
                 type="text"
-                disabled = {true}
+                disabled={true}
                 value={selectLivro.isbn}
               />
             </Col>

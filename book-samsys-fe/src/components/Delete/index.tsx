@@ -9,7 +9,8 @@ import {
   ModalFooter,
 } from "reactstrap";
 import axios from "axios";
-import Livro from "../../book Data";
+import Livro from "../../Livro";
+
 
 export default function Delete(
   args: JSX.IntrinsicAttributes &

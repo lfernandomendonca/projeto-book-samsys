@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useState } from "react";
-import Livro from "../../book Data";
+import Livro from "../../Livro";
 
 export default function Get() {
   const [data, setData] = useState<Array<Livro>>([]);
@@ -19,6 +19,5 @@ export default function Get() {
     }
   };
 
-  return { data, getRequest};
+  return { data, getRequest, setData };
 }
-
