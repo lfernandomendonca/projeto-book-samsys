@@ -25,11 +25,20 @@ namespace BookSamsys.Controllers
             return await _service.GetLivros();
         }
 
+        [HttpGet("Paginado")]
+        public async Task<MessengerHelper<ActionResult<IEnumerable<LivroDTO>>>> GetPaginated([FromQuery] int page = 1, [FromQuery] int perPage = 5)
+        {
+            return await _service.  PaginatedLivros(page, perPage);
+        }
+
+
         [HttpGet("{isbn}")]
         public async Task<MessengerHelper<ActionResult<LivroDTO>>> GetLivroByISBN(string isbn)
         {
             return await _service.GetLivroByISBN(isbn);
         }
+
+
 
         [HttpGet("MaiorPreço")]
         public async Task<MessengerHelper<ActionResult<IEnumerable<LivroDTO>>>> GetLivrosByHighestPrice()

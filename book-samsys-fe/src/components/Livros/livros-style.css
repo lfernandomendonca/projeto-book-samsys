@@ -3,9 +3,9 @@
   display: flexbox;
   text-align: center;
 }
-
 .btn-wrapper {
-  display: inline-flex;
+display:flex;
+height: 37.6px;
 }
 .space-between{
   margin-left: 2px;

@@ -1,14 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { Table } from "reactstrap";
-import Delete from "../Delete";
-import Put from "../Put";
-import Get from "../Get";
+import Delete from "../../services/Delete";
+import Put from "../../services/Put";
+import Get from "../../services/Get";
+import Ddown from "../Ddown";
+import PreviousNextBtn from "../PreviousNextBtn";
 import "./livros-style.css";
-import Search from "../Search";
 
-export default function Livros() {
-  const { data, getRequest, setData } = Get();
+interface LivrosProps {}
+
+export default function Livros({}: LivrosProps): JSX.Element {
+  const { data, getRequest, itemsPerPage, changePage } = Get();
   const [updateData, setUpdateData] = useState(true);
+  const [currentPage, setCurrentPage] = useState<number>(1);
 
   useEffect(() => {
     if (updateData) {
@@ -17,9 +21,44 @@ export default function Livros() {
     }
   }, [updateData]);
 
+  const handleDropdownChange = (value: number) => {
+    itemsPerPage(value);
+    setUpdateData(true);
+  };
+
+  const goToNextPage = () => {
+    changePage(currentPage + 1);
+    setCurrentPage(currentPage + 1);
+    setUpdateData(true);
+  };
+
+  const goToPreviousPage = () => {
+    if (currentPage > 1) {
+      changePage(currentPage - 1);
+      setCurrentPage(currentPage - 1);
+      setUpdateData(true);
+    }
+  };
+
+
+
   return (
-    <div className="container">
-      <Search />
+    <>
+      <Ddown onSelect={handleDropdownChange} />
+
+      <div className="pagination-buttons">
+      <PreviousNextBtn
+  onPreviousClick={goToPreviousPage}
+  onNextClick={goToNextPage}
+  disabledPrevious={currentPage === 1}
+  disabledNext={!data || data.length === 0}
+  currentPage={currentPage}
+  totalPages={Math.ceil((data.length as number) / itemsPerPage.length)}
+/>
+
+
+      </div>
+
       <Table hover responsive size="sm" striped className="table">
         <thead>
           <tr>
@@ -30,22 +69,23 @@ export default function Livros() {
           </tr>
         </thead>
         <tbody>
-          {data.map((Livro, index) => (
-            <tr key={index}>
-              <td>{Livro.isbn}</td>
-              <td>{Livro.livroNome}</td>
-              <td>{Livro.preco}</td>
-              <td>
-                <div className="btn-wrapper">
-                  <Put isbn={Livro.isbn} updateData={setUpdateData} />
-                  <div className="space-between"></div>
-                  <Delete isbn={Livro.isbn} />
-                </div>
-              </td>
-            </tr>
-          ))}
+          {data &&
+            data.map((Livro, index) => (
+              <tr key={index}>
+                <td>{Livro.isbn}</td>
+                <td>{Livro.livroNome}</td>
+                <td>{Livro.preco}</td>
+                <td>
+                  <div className="btn-wrapper">
+                    <Put isbn={Livro.isbn} updateData={setUpdateData} />
+                    <div className="space-between"></div>
+                    <Delete isbn={Livro.isbn} />
+                  </div>
+                </td>
+              </tr>
+            ))}
         </tbody>
       </Table>
-    </div>
+    </>
   );
 }

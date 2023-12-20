@@ -13,5 +13,7 @@ namespace BookSamsys.Infrastructure.Services
         Task<MessengerHelper<ActionResult>> PostLivro(LivroDTO livroDto);
         Task<MessengerHelper<ActionResult>> PutLivro(LivroDTO livroDto);
         Task<MessengerHelper<ActionResult<LivroDTO>>> DeleteLivroByISBN(string isbn);
+        Task<MessengerHelper<ActionResult<IEnumerable<LivroDTO>>>> PaginatedLivros(int page, int perPage);
+
     }
 }

@@ -9,45 +9,90 @@
     using System.Net;
     namespace BookSamsys.Infrastructure.Servicos
     {
-        public class LivroService : ILivroService
+    public class LivroService : ILivroService
+    {
+
+        private readonly IMapper _mapper;
+        private readonly ILivroRepository _livroRepository;
+
+        public LivroService(IMapper mapper, ILivroRepository livroRepo)
+        {
+            _mapper = mapper;
+            _livroRepository = livroRepo;
+        }
+
+        public async Task<MessengerHelper<ActionResult<IEnumerable<LivroDTO>>>> GetLivros()
         {
 
-            private readonly IMapper _mapper;
-            private readonly ILivroRepository _livroRepository;
-
-            public LivroService(IMapper mapper, ILivroRepository livroRepo)
+            MessengerHelper<ActionResult<IEnumerable<LivroDTO>>> response = new();
+            try
             {
-                _mapper = mapper;
-                _livroRepository = livroRepo;
-            }
-
-            public async Task<MessengerHelper<ActionResult<IEnumerable<LivroDTO>>>> GetLivros()
-            {
-                var msgErro = "Não há livros na lista.";
-                var msgOk = "Livros foram listados com sucesso.";
-
-                MessengerHelper<ActionResult<IEnumerable<LivroDTO>>> response = new();
-                try
+                var livros = await _livroRepository.Get().ToListAsync(); ;
+                if (livros == null)
                 {
-                    var livros = await _livroRepository.Get().ToListAsync(); ;
-                    if (livros == null)
-                    {
-                        response.Message = msgErro;
-                        return response;
-                    }
-                    var livrosDto = _mapper.Map<List<LivroDTO>>(livros);
-                    response.Message = msgOk;
-                    response.Obj = livrosDto;
-                    response.Success = true;
+                    response.Message = "Não há livros na lista.";
                     return response;
                 }
-                catch (Exception)
-                {
-                    throw;
-                }
+                var livrosDto = _mapper.Map<List<LivroDTO>>(livros);
+                response.Message = "Livros foram listados com sucesso.";
+                response.Obj = livrosDto;
+                response.Success = true;
+                return response;
             }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
 
-            public async Task<MessengerHelper<ActionResult<LivroDTO>>> GetLivroByISBN(string isbn)
+        public async Task<MessengerHelper<ActionResult<IEnumerable<LivroDTO>>>> PaginatedLivros(int page, int perPage)
+        {
+            MessengerHelper<ActionResult<IEnumerable<LivroDTO>>> response = new MessengerHelper<ActionResult<IEnumerable<LivroDTO>>>();
+            try
+            {
+                // Obter o total de itens no banco de dados
+                var totalItens = await _livroRepository.Get().CountAsync();
+
+                // Calculando o índice de início e fim para a página atual
+                int indexStart = (page - 1) * perPage;
+                int indexEnd = indexStart + perPage;
+
+                // Obtendo os livros paginados
+                var livros = await _livroRepository.Get().Skip(indexStart).Take(perPage).ToListAsync();
+
+                if (livros == null || !livros.Any())
+                {
+                    response.Message = "Não há livros na lista.";
+                    return response;
+                }
+
+                var livrosDto = _mapper.Map<List<LivroDTO>>(livros);
+                response.Message = "Livros foram listados com sucesso.";
+                response.Obj = livrosDto;
+                response.Success = true;
+
+                // Adicionando metadados de paginação
+                response.Metadata = new Metadata
+                {
+                    TotalItens = totalItens,
+                    ItensPorPagina = perPage,
+                    PaginaAtual = page,
+                    TotalPaginas = (int)Math.Ceiling((double)totalItens / perPage)
+                };
+
+                return response;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+
+
+
+
+        public async Task<MessengerHelper<ActionResult<LivroDTO>>> GetLivroByISBN(string isbn)
             {
                 MessengerHelper<ActionResult<LivroDTO>> response = new();
                 try
