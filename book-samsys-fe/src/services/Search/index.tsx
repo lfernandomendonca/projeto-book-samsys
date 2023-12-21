@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { Modal, ModalHeader, ModalBody, Table } from "reactstrap";
 import axios from "axios";
-import { Row, Form, Col, FormGroup, Input, Label, Button } from "reactstrap";
+import { Form, FormGroup, Input, Button } from "reactstrap";
 import Get from "../Get";
+import "./search-style.css";
 
 export default function Search() {
   const { data, setData } = Get();
@@ -42,23 +43,21 @@ export default function Search() {
 
   return (
     <>
-      <div className="container">
+      <div className="w-25">
         <Form onSubmit={handler}>
-          <FormGroup floating>
+          <FormGroup className="d-flex align-items-center">
             <Input
               id="isbnInput"
               name="isbnInput"
               placeholder="Inserir ISBN"
               type="text"
-              bsSize="sm"
               value={inputIsbn}
               onChange={(e) => setInputIsbn(e.target.value)}
             />
-            <Label for="isbnInput">Inserir ISBN</Label>
+            <Button className="search-btn ml-4" color="primary" type="submit">
+              Pesquisar
+            </Button>
           </FormGroup>
-          <Button color="primary" type="submit">
-            Pesquisar
-          </Button>
         </Form>
       </div>
       <Modal isOpen={modalOpen} toggle={toggleModal} size="lg">

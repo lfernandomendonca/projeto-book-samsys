@@ -14,7 +14,7 @@ import {
 import axios from "axios";
 import useGetRequest from "../Get";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBookMedical } from "@fortawesome/free-solid-svg-icons";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
 
 export default function Post(
   args: JSX.IntrinsicAttributes &
@@ -70,9 +70,9 @@ export default function Post(
   };
 
   return (
-    <div className="container">
-      <Button color="warning" onClick={toggle}>
-        Adicionar Livro <FontAwesomeIcon icon={faBookMedical} />
+    <>
+      <Button color="warning" onClick={toggle} className="mt-auto">
+        Novo Livro <FontAwesomeIcon icon={faPlus} />
       </Button>
       <Modal isOpen={modal} toggle={toggle} {...args}>
         <ModalHeader></ModalHeader>
@@ -125,6 +125,6 @@ export default function Post(
           </Form>
         </ModalBody>
       </Modal>
-    </div>
+      </>
   );
 }

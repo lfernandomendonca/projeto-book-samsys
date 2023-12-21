@@ -1,11 +1,13 @@
 .table td,
-.table th {
+.table th
+.table tr {
   display: flexbox;
-  text-align: center;
+  text-align: start;
+  align-items: center;
 }
 .btn-wrapper {
 display:flex;
-height: 37.6px;
+
 }
 .space-between{
   margin-left: 2px;

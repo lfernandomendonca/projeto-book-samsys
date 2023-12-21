@@ -1,3 +1,5 @@
+import { faCaretLeft, faCaretRight } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
 import { Button } from "reactstrap";
 
@@ -15,19 +17,14 @@ const PreviousNextBtn: React.FC<PreviousNextBtnProps> = ({
   onNextClick,
   disabledPrevious,
   disabledNext,
-  currentPage,
-  totalPages,
 }) => (
   <>
     <Button onClick={onPreviousClick} disabled={disabledPrevious}>
-      Previous Page
+    <FontAwesomeIcon icon={faCaretLeft} />
     </Button>
-    <Button onClick={onNextClick} disabled={disabledNext}>
-      Next Page
+    <Button onClick={onNextClick} disabled={disabledNext} className="ms-1">
+    <FontAwesomeIcon icon={faCaretRight} />
     </Button>
-    <div>
-      Current Page: {currentPage} / {totalPages}
-    </div>
   </>
 );
 

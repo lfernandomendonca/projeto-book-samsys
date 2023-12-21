@@ -22,7 +22,7 @@ export default function Ddown({ onSelect }: DdownProps): JSX.Element {
   return (
     <div>
       <Dropdown isOpen={dropdownOpen} toggle={toggle}>
-        <DropdownToggle caret>Número de Registos por Página</DropdownToggle>
+        <DropdownToggle caret>Registos por Página </DropdownToggle>
         <DropdownMenu>
           <DropdownItem onClick={() => handleDropdownChange(5)}>5</DropdownItem>
           <DropdownItem onClick={() => handleDropdownChange(10)}>10</DropdownItem>

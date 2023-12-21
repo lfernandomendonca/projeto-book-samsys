@@ -10,6 +10,8 @@ import {
 } from "reactstrap";
 import axios from "axios";
 import Livro from "../../Livro";
+import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 
 export default function Delete(
@@ -43,10 +45,10 @@ export default function Delete(
   return (
     <>
        <Button color="danger" onClick={toggle}>
-      Remover
+       <FontAwesomeIcon icon={faTrashCan} />
     </Button>
       <Modal isOpen={modal} toggle={toggle} {...args}>
-        <ModalHeader toggle={toggle}>Delete Item</ModalHeader>
+        <ModalHeader toggle={toggle}>Remover Entrada</ModalHeader>
         <ModalBody>Tem certeza que deseja remover este Livro?</ModalBody>
         <ModalFooter>
           <Button color="danger" onClick={deleteRequest}>

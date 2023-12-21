@@ -13,6 +13,8 @@ import {
 } from "reactstrap";
 import axios from "axios";
 import Livro from "../../Livro";
+import { faPen } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function Put(
   props: JSX.IntrinsicAttributes &
@@ -84,7 +86,7 @@ export default function Put(
   return (
     <div>
       <Button color="primary" onClick={toggle}>
-        Editar
+      <FontAwesomeIcon icon={faPen} />
       </Button>
       <Modal isOpen={modal} toggle={toggle} {...props}>
         <ModalHeader></ModalHeader>
