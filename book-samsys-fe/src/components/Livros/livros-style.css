@@ -1,15 +1,17 @@
 .table td,
-.table th
-.table tr {
+.table th .table tr {
   display: flexbox;
   text-align: start;
   align-items: center;
 }
 .btn-wrapper {
-display:flex;
-
+  display: flex;
 }
-.space-between{
+.space-between {
   margin-left: 2px;
   margin-right: 2px;
+}
+
+.search-btn {
+  margin-left: -15px;
 }
